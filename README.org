@@ -1,0 +1,11 @@
+# mac-python-doc     -*- mode: org; fill-column: 80; eval: (auto-fill-mode)-*-
+
+* mac-python-doc
+My function to display documentation from python's 'help()' function in a
+temporary documentation buffer.  The function starts by looking for a symbol at
+point.  If one is found, python's 'help' function is called with this symbol as
+its argument.  If no symbol is present at point, the user is prompted for a
+string via 'read-string'.  The function then creates a temporary buffer of the
+output of the help command and displays this buffer in a separate window.  Point
+is returned to its previous window and location in the current buffer.  If no
+documentation is found, the help buffer displays a function indicating as much.
