@@ -8,16 +8,23 @@ window and location in the current buffer."
 (let ((current-window (selected-window))
       (current-point (point))
       (python-help-buffer (get-buffer-create "*Python-Help*"))
-      (python-symbol (format "%s" (symbol-at-point)))
+      (python-symbol (symbol-at-point))
       (python-string))
-  (when (not python-symbol)
+
+(when (not python-symbol)
     (setq python-symbol (read-string "help on: ")))
-  (setq python-string (concat "help('" python-symbol "')"))
+
+  (setq python-string
+        (concat "help('"
+                (format "%s" python-symbol)
+                "')"))
+
   (with-output-to-temp-buffer python-help-buffer
-      (prin1 (python-shell-send-string-no-output python-string) python-help-buffer))
-  (pop-to-buffer python-help-buffer)
-  (beginning-of-buffer)
-  (help-mode)
-  (select-window current-window)
-  (goto-char current-point))
+    (prin1 (python-shell-send-string-no-output python-string) python-help-buffer))
+
+(pop-to-buffer python-help-buffer)
+(beginning-of-buffer)
+(help-mode)
+(select-window current-window)
+(goto-char current-point))
 )
