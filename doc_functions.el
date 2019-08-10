@@ -1,10 +1,13 @@
+;; functions for context-aware access to documentation pages (man, help, etc...)
+(load-file "~/Desktop/emacs/mac-python-doc/popup.el")
+
 ;; -----
 (defun mac-man-page ()
   "Get a manpage while editing bash code."
   (interactive)
   (let ((page (thing-at-point 'word t)))
     (when
-        (= 1 (shell-command (concat "which " page)))
+        (= 1 (call-process "which" nil nil nil (format "%s" page)))
       (setq page
             (completing-read
              "help on: "
@@ -17,6 +20,7 @@
 
 ;; -----
 ;; for python completion
+;; note that this requires 'epc'; if you don't have it, 'pip install epc'
 (defun jedi:ac-direct-matches ()
   (mapcar
    (lambda (x)
@@ -81,7 +85,7 @@ window and location in the current buffer."
       (setq mm (cadr (assoc (completing-read "mode: " completions) completions))))
 
     (cond
-     ;; R help - use "*R*" as current buffer to get completions 
+     ;; R help - use "*R*" as current buffer to get completions
      ((eq mm 'ess-mode)
         (if (or
              (not topic)
