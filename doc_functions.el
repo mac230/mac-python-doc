@@ -8,6 +8,14 @@
     "man page for: "
     (woman-topic-all-completions woman-expanded-directory-path))))
 
+;; -----
+;; necessary to return point to the desired window after invoking woman
+(defun woman-window-hook ()
+  (run-at-time "0.1 sec" nil
+   (lambda () (select-window (car (window-at-side-list nil 'left))))))
+
+(add-hook 'woman-post-format-hook 'woman-window-hook)
+
 
 ;; -----
 ;; for python completion
