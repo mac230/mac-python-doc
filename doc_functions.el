@@ -1,21 +1,12 @@
 ;; functions for context-aware access to documentation pages (man, help, etc...)
-(load-file "~/Desktop/emacs/mac-python-doc/popup.el")
-
 ;; -----
 (defun mac-man-page ()
   "Get a manpage while editing bash code."
   (interactive)
-  (let ((page (thing-at-point 'word t)))
-    (when
-        (= 1 (call-process "which" nil nil nil (format "%s" page)))
-      (setq page
-            (completing-read
-             "help on: "
-             'Man-completion-table nil nil nil 'Man-topic-history)))
-    (unless (not page)
-      (eshell/man page))))
-
-
+  (woman
+   (ivy-completing-read
+    "man page for: "
+    (woman-topic-all-completions woman-expanded-directory-path))))
 
 
 ;; -----
@@ -31,8 +22,6 @@
                         :document (unless (equal doc "") doc)
                         :summary description)))
    jedi:complete-reply))
-
-
 
 
 ;; -----
@@ -68,10 +57,10 @@ window and location in the current buffer."
 
 
 ;; -----
-(defun mac-master-documentation ()
+(defun mac-master-documentation (arg)
   "My function for context-aware calling of documentation for R, python, shell, or elisp.
   Relies on various helper functions."
-  (interactive)
+  (interactive "P")
   (let ((cb (current-buffer))
         (cp (point))
         (completions '(("ess-mode" ess-mode) ("sh-mode" sh-mode) ("python-mode" python-mode) ("emacs-lisp-mode" emacs-lisp-mode)))
@@ -81,7 +70,9 @@ window and location in the current buffer."
     (when (not (bufferp (get-buffer "*R*")))
       (rstart))
 
-    (when (eq mm 'org-mode)
+    (when (or
+	   (eq mm 'org-mode)
+	   (not (= (prefix-numeric-value arg) 1)))
       (setq mm (cadr (assoc (completing-read "mode: " completions) completions))))
 
     (cond
