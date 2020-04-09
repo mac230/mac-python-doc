@@ -78,16 +78,7 @@ window and location in the current buffer."
     (cond
      ;; R help - use "*R*" as current buffer to get completions
      ((eq mm 'ess-mode)
-        (if (or
-             (not topic)
-             ;; deal with thing-at-point not handling "." containing sexps
-             ;; need to double the 'with-current-buffer' or the looking-at test runs in R
-             (or (looking-at "[[:alnum:]]+[._]")
-                 (looking-back "[[:alnum:]]+[._][[:alnum:]]+")))
-                 (with-current-buffer "*R*"
-		   (call-interactively 'ess-display-help-on-object))
-                 (with-current-buffer "*R*"
-		   (ess-display-help-on-object topic))))
+        (mc-rdoc-push))
 
      ;; python help
      ((eq mm 'python-mode)
