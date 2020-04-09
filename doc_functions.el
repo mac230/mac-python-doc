@@ -85,9 +85,9 @@ window and location in the current buffer."
              (or (looking-at "[[:alnum:]]+[._]")
                  (looking-back "[[:alnum:]]+[._][[:alnum:]]+")))
                  (with-current-buffer "*R*"
-                 (call-interactively 'ess-display-help-on-object))
+		   (call-interactively 'ess-display-help-on-object))
                  (with-current-buffer "*R*"
-                 (ess-display-help-on-object topic))))
+		   (ess-display-help-on-object topic))))
 
      ;; python help
      ((eq mm 'python-mode)
