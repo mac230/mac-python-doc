@@ -13,6 +13,7 @@
          (man)
          (R-buffer)
          (help-page)
+         (xwidget)
          (current-buffer (current-buffer))
          (scroll-error-top-bottom t)
          (scroll-fun
@@ -34,9 +35,14 @@
 	      (pdf-view-next-page-command val))
 	    (switch-to-buffer-other-window current-buffer)
             (goto-char current-point)))
+         (xwidget-scroll-fun
+          (lambda (val)
+            (if (> val 0)
+                (xwidget-webkit-scroll-up-line 25)
+              (xwidget-webkit-scroll-down-line 25))))
          )
 
-  ;; use dolist to find which of the different buffer types you have
+    ;; use dolist to find which of the different buffer types you have
     (dolist (buffer window-list)
       ;; man page
       (when (eq
@@ -57,7 +63,14 @@
       (when (eq
 	     (buffer-local-value 'major-mode (window-buffer buffer))
 	     'help-mode)
-	(setq help-page (window-buffer buffer))))
+	(setq help-page (window-buffer buffer)))
+      ;; xwidget buffer
+      (when (eq
+             (buffer-local-value 'major-mode (window-buffer buffer))
+	     'xwidget-webkit-mode)
+	(setq xwidget (window-buffer buffer)))
+      )
+
 
   ;; now use cond to decide how to proceed
   (cond
@@ -85,6 +98,13 @@
          (not man)
          (not R-buffer))
     (funcall scroll-fun help-page))
+   ;; have an xwidget page open
+   ((and xwidget
+         (not help-page)
+         (not pdf)
+         (not man)
+         (not R-buffer))
+    (funcall xwidget-scroll-fun val))
    ;; have some other configuration
    ((or pdf man R-buffer help-page)
     (let* ((key (key-description
